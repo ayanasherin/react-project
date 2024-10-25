@@ -1,0 +1,88 @@
+
+.page-container {
+    background-image: url('../../../public/pic2.jpeg'); /* Add your image path here */
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh; /* Full-height background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.registration-form-container {
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+    background-image: url('../../../public/bi.jpg'); /* Add your image path here */
+    background-size: cover; /* Ensure the image covers the entire form */
+    background-position: center; /* Center the image */
+}
+
+.register-title {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.register-input-group {
+    margin-bottom: 15px;
+}
+
+.register-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 600;
+}
+
+.register-input,
+.register-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.register-field {
+    display: inline-block;
+    width: 48%;
+    margin-right: 2%;
+}
+
+.register-field:last-child {
+    margin-right: 0;
+}
+
+.register-checkbox {
+    margin-top: 10px;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.register-button {
+    background-color: rgb(20, 99, 227);
+    color: white;
+    padding: 10px 15px;
+    margin-left: 150px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    width: 50%;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.register-button:hover {
+    background-color: rgb(41, 41, 192);
+}
+

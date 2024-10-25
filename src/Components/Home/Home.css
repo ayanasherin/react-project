@@ -1,0 +1,29 @@
+.welcome-container {
+    height: 100vh; 
+    background-image: url('../../../public/pic4.jpeg');  
+    background-size: cover; 
+    background-position: center; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    text-align: center; 
+    color: white; 
+  }
+  
+  .welcome-message {
+    background-color: rgba(0, 0, 0, 0.6); 
+    padding: 20px; 
+    border-radius: 8px; 
+  }
+  
+  h1 {
+    font-size: 3em; 
+    margin-bottom: 20px; 
+  }
+  
+  p {
+    font-size: 1.2em; 
+    margin-bottom: 15px; 
+  }
+  
+  
