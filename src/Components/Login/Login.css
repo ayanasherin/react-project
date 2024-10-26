@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('../../../public/pic4.jpeg'); /* Background image */
+    background-image: url('../../../public/pic4.jpeg'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -16,7 +16,7 @@
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3); 
     border-radius: 12px;
     overflow: hidden;
-    backdrop-filter: blur(10px); 
+    backdrop-filter: blur(80px); 
 }
 
 .login-form-section {
@@ -91,6 +91,9 @@ input::placeholder {
 }
 
 .signup-msg a {
-    color: #00BFFF;
+    color:  #00BFFF;
     text-decoration: none;
+}
+.login-error-message{
+    color:black;
 }
