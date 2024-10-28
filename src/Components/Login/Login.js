@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [email, setEmail] = useState(''); 
@@ -9,6 +11,13 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState(''); 
   const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
+  const notify = (message) => toast(message);
+
+  useEffect(() => {
+    if (localStorage.getItem('isLoggedIn')) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,16 +28,17 @@ const Login = () => {
       const response = await axios.post('http://localhost:8080/api/userlogin', { email, password });
       
       if (response.status === 200) {
-        const { firstName, message } = response.data; 
-        console.log(message); 
-        localStorage.setItem('firstName', firstName); 
+        const { firstname} = response.data; 
+        console.log(firstname)
+        localStorage.setItem('firstname', firstname); 
+        localStorage.setItem('isLoggedIn',true)
         navigate('/dashboard'); 
       }
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
           setErrorMessage('Invalid credentials....!!');
-          alert("Invalid credentials...!!");
+          notify("Invalid credentials...!!");
         } else {
           setErrorMessage('An unexpected error occurred. Please try again.');
         }
@@ -87,6 +97,7 @@ const Login = () => {
               Don't have an account? <a href="/register">Register</a>
             </p>
           </form>
+          <ToastContainer />
         </div>
       </div>
     </div>

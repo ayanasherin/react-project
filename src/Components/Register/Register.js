@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -26,8 +28,10 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
+  const notify = (message) => toast(message);
 
   const validate = () => {
     const newErrors = {};
@@ -84,11 +88,24 @@ const Register = () => {
       ...prevData,
       [name]: files ? files[0] : value,
     }));
+    setTouchedFields((prevTouched) => ({
+      ...prevTouched,
+      [name]: true,
+    }));
   };
 
   useEffect(() => {
     if (submitted) {
       validate();
+    } else {
+      // Trigger validation only for touched fields
+      const newErrors = {};
+      for (const field in touchedFields) {
+        if (touchedFields[field]) {
+          validate(); // Call your existing validation for the specific field if touched
+        }
+      }
+      setErrors((prevErrors) => ({ ...prevErrors, ...newErrors }));
     }
   }, [formData, submitted]);
 
@@ -111,8 +128,8 @@ const Register = () => {
             },
           }
         );
+        notify("Registration successful!");
         console.log("Registration successful:", response.data);
-        alert("Registration successful!");
         navigate("/login");
 
         if (formData.resume) {
@@ -131,9 +148,9 @@ const Register = () => {
 
         if (error.response && error.response.data) {
           const errorMessage = error.response.data.message;
-          alert(errorMessage);
+          notify(errorMessage);
         } else {
-          alert("An unexpected error occurred. Please try again.");
+          notify("An unexpected error occurred. Please try again.");
         }
       }
     } else {
@@ -155,9 +172,13 @@ const Register = () => {
     }
   };
 
+
+
+
   return (
     <div className="page-container">
       <div className="registration-form-container">
+       
         <h2 className="register-title">
           Professional Development Workshop Registration Form
         </h2>
@@ -415,6 +436,7 @@ const Register = () => {
             Submit
           </button>
         </form>
+        <ToastContainer/>
       </div>
     </div>
   );

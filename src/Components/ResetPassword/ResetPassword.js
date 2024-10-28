@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./ResetPassword.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ResetPassword() {
   const [formData, setFormData] = useState({
@@ -10,6 +12,9 @@ export default function ResetPassword() {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [token, setToken] = useState(null);
+  const [isConfirmPasswordActive, setIsConfirmPasswordActive] = useState(false);
+  const notify = (message) => toast(message);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -39,31 +44,47 @@ export default function ResetPassword() {
       ...formData,
       [name]: value,
     });
-    setErrors({ ...errors, [name]: "" });
+
+    let newErrors = { ...errors };
+
+   
+    if (name === "newPassword") {
+      newErrors.newPassword = validatePassword(value);
+    }
+
+    
+    if (name === "confirmNewPassword" || name === "newPassword") {
+      if (isConfirmPasswordActive && formData.newPassword !== value) {
+        newErrors.confirmNewPassword = "Passwords do not match";
+      } else {
+        newErrors.confirmNewPassword = "";
+      }
+    }
+
+    setErrors(newErrors);
     setSuccessMessage("");
+  };
+
+  const handleConfirmPasswordFocus = () => {
+    setIsConfirmPasswordActive(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
-
     const newErrors = {};
     newErrors.newPassword = validatePassword(formData.newPassword);
-    
 
     if (!formData.confirmNewPassword) {
       newErrors.confirmNewPassword = "Please confirm your new password";
     } else if (formData.newPassword !== formData.confirmNewPassword) {
       newErrors.confirmNewPassword = "Passwords do not match";
     }
-   
 
+    setErrors(newErrors);
 
-    setErrors({});
+    if (Object.keys(newErrors).some((key) => newErrors[key])) return;
+
     try {
-      console.log("Form Data:", formData);
-      console.log("Token:", token);
-
       const response = await fetch("http://localhost:8080/api/reset-password", {
         method: "POST",
         headers: {
@@ -76,13 +97,15 @@ export default function ResetPassword() {
         }),
       });
 
-      console.log("Response Status:", response.status);
       const data = await response.json();
-      console.log("Response Data:", data);
 
       if (response.ok) {
         setSuccessMessage(data.message);
-        navigate("/login");
+        notify("Password reset successful");
+        
+        setTimeout(()=>{
+          navigate('/login')
+        },2000);
       } else {
         setErrors({
           confirmNewPassword: data.error || "Failed to reset password.",
@@ -99,10 +122,10 @@ export default function ResetPassword() {
   return (
     <div className="reset-password-background">
       <div className="reset-password-container">
-        <h2>Reset Password</h2>
-        <form id="resetPasswordForm" onSubmit={handleSubmit}>
-          <label htmlFor="new-password">New Password:</label>
-          <input
+        <h2 className="resetpassword-h2">Reset Password</h2>
+        <form className = "resetpassword-form"id="resetPasswordForm" onSubmit={handleSubmit}>
+          <label className="resetpassword-label" htmlFor="new-password">New Password:</label>
+          <input className="resetpassword-input"
             type="password"
             id="new-password"
             name="newPassword"
@@ -115,25 +138,27 @@ export default function ResetPassword() {
             <div className="error">{errors.newPassword}</div>
           )}
 
-          <label htmlFor="confirm-new-password">Confirm New Password:</label>
-          <input
+          <label className="resetpassword-label" htmlFor="confirm-new-password">Confirm New Password:</label>
+          <input  className="resetpassword-input"
             type="password"
             id="confirm-new-password"
             name="confirmNewPassword"
             placeholder="Confirm new password"
             value={formData.confirmNewPassword}
             onChange={handleChange}
+            onFocus={handleConfirmPasswordFocus}
             required
           />
-          {errors.confirmNewPassword && (
-            <div className="error">{errors.confirmNewPassword}</div>
+          {isConfirmPasswordActive && errors.confirmNewPassword && (
+            <div className="resetpassword-error">{errors.confirmNewPassword}</div>
           )}
 
-          <div className="success">{successMessage}</div>
-          <button type="submit" className="submit-button">
+          <div className="resetpassword-success">{successMessage}</div>
+          <button type="submit" className="resetpassword-submit-button">
             Reset Password
           </button>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );

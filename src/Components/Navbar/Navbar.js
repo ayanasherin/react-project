@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = ({ isLoggedIn, logout }) => {
+const Navbar = () => {
+    const [isLoggedIn,setIsLoggedIn] = useState(false);
+
+
     const navigate = useNavigate();
     const location = useLocation(); 
 
+    console.log(isLoggedIn)
+
+    useEffect(()=>{
+      setIsLoggedIn(localStorage.getItem('isLoggedIn'))
+    })
     const handleLogout = () => {
         
         localStorage.clear();
-        logout(); 
+      
         navigate('/'); 
     };
 
@@ -28,9 +36,12 @@ const Navbar = ({ isLoggedIn, logout }) => {
                             {!isLoggedIn && location.pathname !== '/register' && (
                                 <Link className="nav-link" to="/register">Register</Link>
                             )}
-                             {/* {!isLoggedIn && location.pathname !== '/dashboard' && (
-                                <Link className="nav-link" to="/dashboard">Logout</Link>
-                            )} */}
+                             {isLoggedIn && (
+                                <Link className="nav-link" to="/dashboard">Dashboard</Link>
+                            )}
+                             {isLoggedIn && location.pathname !== '/dashboard' && (
+                                <Link onClick={handleLogout} className="nav-link" to="/dashboard">Logout</Link>
+                            )}
                         </>
                     )}
                 </div>

@@ -1,6 +1,6 @@
 
 .page-container {
-    background-image: url('../../../public/pic2.jpeg'); 
+    background-image: url('../../../public/bi.jpg'); 
     background-size: cover;
     background-position: center;
     min-height: 100vh; 
@@ -9,13 +9,14 @@
     align-items: center;
 }
 .registration-form-container {
-    background: rgba(255, 255, 255, 0.8); 
+    /* background: rgba(255, 255, 255, 0.8);  */
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     margin: 20px auto;
-    background-image: url('../../../public/bi.jpg'); 
+    backdrop-filter: blur(100px); 
+    /* background-image: url('../../../public/bi.jpg');  */
     background-size: cover; 
     background-position: center; 
 }

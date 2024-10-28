@@ -1,12 +1,16 @@
 .dashboard {
-    background-image: url('../../../public/img1.jpg');
+    /* background-image: url('../../../public/img1.jpg'); */
     background-size: cover;
     background-position: center;
+    background-color: rgb(24, 5, 48);
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-size: 2rem;
+  }
+  .dashboard-h2{
+    color: white;
   }
   
