@@ -10,20 +10,7 @@ import ResetPassword from './Components/ResetPassword/ResetPassword';
 import Dashboard from './Components/Dashboard/Dashboard';
 
 function App() {
-  // const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
-
-  // const handleLogout = () => {
-  //   setIsLoggedIn(false);
-  //   localStorage.removeItem('isLoggedIn'); // Clear login state from localStorage
-  // };
-
-  // // Check localStorage to set initial state on refresh
-  // React.useEffect(() => {
-  //   const loggedIn = localStorage.getItem('isLoggedIn');
-  //   if (loggedIn) {
-  //     setIsLoggedIn(true);
-  //   }
-  // }, []);
+ 
 
   return (
     <Router>

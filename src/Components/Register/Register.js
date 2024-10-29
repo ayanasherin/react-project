@@ -23,12 +23,11 @@ const Register = () => {
     bachelorGPA: "",
     md: "",
     mdGPA: "",
-    lookingForInternship: "",
+    lookingForInternship: null,
     resume: null,
   });
 
   const [errors, setErrors] = useState({});
-  const [touchedFields, setTouchedFields] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
   const notify = (message) => toast(message);
@@ -78,34 +77,41 @@ const Register = () => {
       newErrors.bachelorGPA = "GPA must be between 0 and 4.0";
     if (formData.mdGPA < 0 || formData.mdGPA > 4.0)
       newErrors.mdGPA = "GPA must be between 0 and 4.0";
+
+    console.log(newErrors);
     setErrors(newErrors);
+    
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files,type, checked } = e.target;
+
+    if (type === 'checkbox') {
+      setFormData((prevData) => ({
+        ...prevData,
+        lookingForInternship: checked, 
+      }));
+      return;
+    }
+    if ((name === 'firstname' || name === 'lastname') && /[^a-zA-Z\s]/.test(value)) {
+      return; 
+    }
+    if((name === 'zipcode') && /[^0-9]/.test(value)){
+      return;
+    }
+    if((name === 'phone') && /[^0-9]/.test(value)){
+      return;
+    }
     setFormData((prevData) => ({
       ...prevData,
       [name]: files ? files[0] : value,
-    }));
-    setTouchedFields((prevTouched) => ({
-      ...prevTouched,
-      [name]: true,
     }));
   };
 
   useEffect(() => {
     if (submitted) {
       validate();
-    } else {
-      // Trigger validation only for touched fields
-      const newErrors = {};
-      for (const field in touchedFields) {
-        if (touchedFields[field]) {
-          validate(); // Call your existing validation for the specific field if touched
-        }
-      }
-      setErrors((prevErrors) => ({ ...prevErrors, ...newErrors }));
     }
   }, [formData, submitted]);
 
@@ -113,39 +119,49 @@ const Register = () => {
     e.preventDefault();
     setSubmitted(true);
     if (validate()) {
-      const jsonData = {
-        ...formData,
-        resume: formData.resume ? formData.resume.name : null,
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append("prefix", formData.prefix);
+      formDataToSend.append("firstname", formData.firstname);
+      formDataToSend.append("lastname", formData.lastname);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("password", formData.password);
+      formDataToSend.append("addressline1", formData.addressline1);
+      formDataToSend.append("adressline2", formData.adressline2);
+      formDataToSend.append("city", formData.city);
+      formDataToSend.append("state", formData.state);
+      formDataToSend.append("zipcode", formData.zipcode);
+      formDataToSend.append("countrycode", formData.countrycode);
+      formDataToSend.append("phone", formData.phone);
+      formDataToSend.append("bachelorDegree", formData.bachelorDegree);
+      formDataToSend.append("bachelorGPA", formData.bachelorGPA);
+      formDataToSend.append("md", formData.md);
+      formDataToSend.append("mdGPA", formData.mdGPA);
+      formDataToSend.append("lookingForInternship", formData.lookingForInternship);
+      if (formData.lookingForInternship !== null) {
+        formDataToSend.append("lookingForInternship", formData.lookingForInternship);
+    }
+      
+      if (formData.resume) {
+        formDataToSend.append("resume", formData.resume);
+      }
 
       try {
         const response = await axios.post(
           "http://localhost:8080/api/register",
-          jsonData,
+          formDataToSend,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "multipart/form-data",
             },
           }
         );
         notify("Registration successful!");
         console.log("Registration successful:", response.data);
-        navigate("/login");
-
-        if (formData.resume) {
-          const formDataToSend = new FormData();
-          formDataToSend.append("resume", formData.resume);
-
-          await axios.post("http://localhost:8080/api/upload", formDataToSend, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          console.log("File uploaded successfully");
-        }
+        setTimeout(()=>{
+          navigate('/login')
+        },2000);
       } catch (error) {
         console.error("Error registering:", error);
-
         if (error.response && error.response.data) {
           const errorMessage = error.response.data.message;
           notify(errorMessage);
@@ -157,6 +173,7 @@ const Register = () => {
       console.log("Form contains errors.");
     }
   };
+  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -172,13 +189,10 @@ const Register = () => {
     }
   };
 
-
-
-
   return (
     <div className="page-container">
       <div className="registration-form-container">
-       
+        <ToastContainer/>
         <h2 className="register-title">
           Professional Development Workshop Registration Form
         </h2>
@@ -406,7 +420,7 @@ const Register = () => {
           </div>
 
           <div className="register-input-group">
-            <div className="register-field">
+            {/* <div className="register-field">
               <label className="register-label">Looking for Internship:</label>
               <select
                 name="lookingForInternship"
@@ -418,8 +432,8 @@ const Register = () => {
                 <option>Yes</option>
                 <option>No</option>
               </select>
-            </div>
-            <div className="register-field">
+            </div> */}
+            {/* <div className="register-field">
               <label className="register-label">Resume:</label>
               <input
                 type="file"
@@ -429,14 +443,34 @@ const Register = () => {
                 className="register-input"
               />
               {errors.resume && <span className="error">{errors.resume}</span>}
-            </div>
+            </div> */}
+            <div>
+          <label>
+            Looking for Internship:
+            <input className="register-chkbox"
+              type="checkbox"
+              checked={formData.lookingForInternship === true} 
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+            <div className="register-field">
+      <label className="register-label">Resume:</label>
+      <input
+        type="file"
+        accept="application/pdf"
+        name="resume"
+        onChange={handleFileChange}
+        className="register-input"
+      />
+      {errors.resume && <span className="error">{errors.resume}</span>}
+        </div>
           </div>
 
           <button type="submit" className="register-button">
             Submit
           </button>
         </form>
-        <ToastContainer/>
       </div>
     </div>
   );

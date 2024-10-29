@@ -23,7 +23,7 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
-            <div className="container">
+            <div className="nav-container">
                 <Link className="navbar-brand" to="/">Home</Link>
                 <div className="nav-links">
                     {location.pathname === '/dashboard' && isLoggedIn ? (
